@@ -854,26 +854,27 @@ p  { font-size: 1rem; color: var(--charcoal); }
   bottom: 0;
   width: 56%;
   pointer-events: none;
+  background: var(--white); /* blends with section bg so contain whitespace is invisible */
 }
 .story-photo-panel img {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: top center;
+  object-fit: contain;        /* show full photo — no cropping */
+  object-position: right bottom; /* anchor to right-bottom so tool + person are fully visible */
   display: block;
 }
-/* Gradient fade: solid white on left → transparent on right */
+/* Gradient fade: covers only the left edge of the panel */
 .story-photo-fade {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to right,
-    var(--white) 0%,
-    var(--white) 12%,
-    rgba(255,255,255,.92) 28%,
-    rgba(255,255,255,.55) 45%,
-    rgba(255,255,255,.12) 62%,
-    transparent 78%
+    var(--white)              0%,
+    var(--white)              8%,
+    rgba(255,255,255,.75)    22%,
+    rgba(255,255,255,.25)    36%,
+    rgba(255,255,255,.04)    48%,
+    transparent              58%
   );
 }
 
@@ -969,14 +970,18 @@ p  { font-size: 1rem; color: var(--charcoal); }
   .story-photo-panel {
     position: relative;
     width: 100%;
-    height: 380px;
+    height: 420px;
     right: auto; top: auto; bottom: auto;
+  }
+  .story-photo-panel img {
+    object-fit: contain;
+    object-position: center bottom;
   }
   .story-photo-fade {
     background: linear-gradient(
       to bottom,
-      transparent 30%,
-      rgba(255,255,255,.7) 70%,
+      transparent 50%,
+      rgba(255,255,255,.5) 78%,
       var(--white) 100%
     );
   }
