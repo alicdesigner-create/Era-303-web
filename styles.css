@@ -841,6 +841,8 @@ p  { font-size: 1rem; color: var(--charcoal); }
   flex-wrap: wrap;
   gap: 8px;
 }
+.footer-credit { color: rgba(255,255,255,.4); transition: color var(--transition); }
+.footer-credit:hover { color: var(--salmon); }
 
 /* ============================================
    ABOUT — Story Split Editorial
