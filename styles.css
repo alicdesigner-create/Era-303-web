@@ -105,11 +105,13 @@ p  { font-size: 1rem; color: var(--charcoal); }
   border-radius: 50%;
 }
 .nav-logo-text {
-  font-family: var(--font-display);
-  font-size: 1.35rem;
+  font-family: var(--font-body);
+  font-size: 1.05rem;
   font-weight: 700;
   color: var(--dark);
   line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
 }
 .nav-logo-text span { color: var(--salmon); }
 .nav-links {
@@ -799,11 +801,13 @@ p  { font-size: 1rem; color: var(--charcoal); }
   filter: brightness(1.05);
 }
 .footer-logo-name {
-  font-family: var(--font-display);
-  font-size: 1.2rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
   font-weight: 700;
   color: var(--white);
   line-height: 1.2;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
 }
 .footer-logo-name span { color: var(--salmon); }
 .footer-tagline { font-size: .88rem; line-height: 1.7; }
