@@ -52,26 +52,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  /* ---- Hero background: fade-in + parallax ---- */
-  const heroBg      = document.querySelector('.hero-bg');
-  const heroSection = document.querySelector('.hero');
-  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (heroBg) {
-    // Entrance fade-in (always)
-    setTimeout(() => heroBg.classList.add('loaded'), 80);
-
-    // Parallax scroll (skip on mobile & reduced-motion)
-    if (heroSection && !reducedMotion) {
-      const parallaxHero = () => {
-        if (window.innerWidth < 768) { heroBg.style.transform = ''; return; }
-        const scrolled = window.scrollY;
-        if (scrolled > heroSection.offsetHeight) return;
-        heroBg.style.transform = `translateY(${(scrolled * 0.28).toFixed(2)}px)`;
-      };
-      window.addEventListener('scroll', parallaxHero, { passive: true });
-      parallaxHero();
-    }
+  /* ---- Hero video: slow-motion playback ---- */
+  const heroVideo = document.querySelector('.hero-video');
+  if (heroVideo) {
+    // 0.55× = slow-motion feel without looking choppy
+    heroVideo.playbackRate = 0.55;
+    heroVideo.addEventListener('canplay', () => {
+      heroVideo.playbackRate = 0.55; // re-apply after browser normalises it
+    });
   }
 
   /* ---- Scroll fade-in animation ---- */

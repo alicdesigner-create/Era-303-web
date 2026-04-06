@@ -233,28 +233,25 @@ p  { font-size: 1rem; color: var(--charcoal); }
   align-items: center;
   overflow: hidden;
 }
-.hero-bg {
+.hero-video {
   position: absolute;
-  inset: -15% 0;          /* extra vertical room for parallax travel */
-  background-image: url('assets/hero-technician.png');
-  background-size: cover;
-  background-position: center 15%;
-  transform: scale(1);
-  opacity: 0;
-  transition: opacity 1.2s ease;
-  filter: brightness(1.05) contrast(1.08) saturate(0.9);
-  will-change: transform;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.72) saturate(0.8) contrast(1.05);
+  pointer-events: none;
 }
-.hero-bg.loaded { opacity: 1; }
 .hero-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
     to right,
-    rgba(20,20,20,.80) 0%,
-    rgba(30,30,30,.65) 45%,
-    rgba(20,20,20,.28) 75%,
-    rgba(10,10,10,.10) 100%
+    rgba(10,10,10,.72) 0%,
+    rgba(20,20,20,.55) 50%,
+    rgba(10,10,10,.25) 80%,
+    rgba(5,5,5,.08)   100%
   );
 }
 .hero-content {
