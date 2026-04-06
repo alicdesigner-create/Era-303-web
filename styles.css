@@ -534,6 +534,15 @@ p  { font-size: 1rem; color: var(--charcoal); }
   font-size: 2rem;
 }
 .service-side { text-align: center; }
+.service-side--photo { text-align: left; }
+.service-photo {
+  width: 100%;
+  border-radius: var(--radius-lg);
+  object-fit: cover;
+  aspect-ratio: 3 / 4;
+  box-shadow: var(--shadow-md);
+  display: block;
+}
 .service-body h2 { margin-bottom: 14px; }
 .service-body > p { margin-bottom: 22px; line-height: 1.8; }
 .service-includes {
