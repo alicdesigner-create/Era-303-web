@@ -835,6 +835,99 @@ p  { font-size: 1rem; color: var(--charcoal); }
 }
 
 /* ============================================
+   ABOUT — Story Split Editorial
+   ============================================ */
+.story-split {
+  position: relative;
+  overflow: hidden;
+  padding: 0;
+  min-height: 580px;
+  display: flex;
+  align-items: stretch;
+}
+
+/* Photo: right panel, absolutely pinned */
+.story-photo-panel {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 56%;
+  pointer-events: none;
+}
+.story-photo-panel img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+  display: block;
+}
+/* Gradient fade: solid white on left → transparent on right */
+.story-photo-fade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to right,
+    var(--white) 0%,
+    var(--white) 12%,
+    rgba(255,255,255,.92) 28%,
+    rgba(255,255,255,.55) 45%,
+    rgba(255,255,255,.12) 62%,
+    transparent 78%
+  );
+}
+
+/* Text column: left half, in-flow */
+.story-text-col {
+  position: relative;
+  z-index: 2;
+  width: 50%;
+  padding: 90px 0 90px calc((100vw - 1180px) / 2);
+  padding-left: max(5%, calc((100vw - 1180px) / 2));
+  padding-right: 48px;
+}
+.story-text-col .overline {
+  display: inline-block;
+  font-size: .78rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--salmon);
+  margin-bottom: 10px;
+}
+.story-text-col h2 { margin-bottom: 20px; }
+.story-text-col p  { margin-bottom: 14px; line-height: 1.85; }
+
+/* Stat badge */
+.story-stat {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 36px;
+  padding: 18px 22px;
+  background: var(--charcoal-dk);
+  border-radius: var(--radius-lg);
+  border-left: 4px solid var(--salmon);
+  max-width: 320px;
+}
+.story-stat-number {
+  font-family: var(--font-display);
+  font-size: 3.2rem;
+  font-weight: 700;
+  color: var(--salmon);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.story-stat-text strong {
+  display: block;
+  font-size: .9rem;
+  font-weight: 600;
+  color: var(--white);
+  margin-bottom: 2px;
+}
+.story-stat-text span { font-size: .8rem; color: rgba(255,255,255,.6); }
+
+/* ============================================
    SCROLL ANIMATIONS
    ============================================ */
 .fade-up {
@@ -867,6 +960,31 @@ p  { font-size: 1rem; color: var(--charcoal); }
   .contact-layout { grid-template-columns: 1fr; }
   .contact-info-card { position: static; }
   .values-grid { grid-template-columns: 1fr 1fr; }
+
+  /* Story split — stacked on tablet/mobile */
+  .story-split {
+    flex-direction: column;
+    min-height: unset;
+  }
+  .story-photo-panel {
+    position: relative;
+    width: 100%;
+    height: 380px;
+    right: auto; top: auto; bottom: auto;
+  }
+  .story-photo-fade {
+    background: linear-gradient(
+      to bottom,
+      transparent 30%,
+      rgba(255,255,255,.7) 70%,
+      var(--white) 100%
+    );
+  }
+  .story-text-col {
+    width: 100%;
+    padding: 40px 5% 64px;
+  }
+  .story-stat { max-width: 100%; }
 }
 
 @media (max-width: 640px) {
