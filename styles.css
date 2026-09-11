@@ -7,11 +7,14 @@
 
 /* --- CSS Variables --- */
 :root {
-  /* ERA 303 — Phase 2 palette: bright, clean, cleaning-focused.
-     Teal is the primary action color; coral is used sparingly for
-     accents (logo mark, phone link, price emphasis, the "big job"
-     card). Navy is reserved for dark panels (top bar, footer, inner
-     page banners) — most of the site stays light and airy. */
+  /* ERA 303 — bright, clean, cleaning-focused palette.
+     Coral is the accent for conversion/emphasis moments: primary CTA
+     buttons, the phone link, active nav state, overlines/dividers,
+     price emphasis, the "big job" card. Teal carries the structural,
+     more frequent elements (icons, secondary "schedule" buttons,
+     the estimate card border) so coral stays an accent, not the
+     dominant color. Navy is reserved for dark panels (top bar,
+     footer, inner page banners) — most of the site stays light. */
   --navy:        #12343B;
   --olive:       #2FAF8F;   /* Teal — primary actions */
   --olive-dk:    #259C7E;
@@ -138,7 +141,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
   transition: background var(--transition), color var(--transition);
 }
 .nav-links a:hover { background: var(--offwhite); color: var(--dark); }
-.nav-links a.active { color: var(--olive-dk); font-weight: 600; }
+.nav-links a.active { color: var(--salmon); font-weight: 600; }
 .nav-cta {
   background: var(--salmon);
   color: var(--white) !important;
@@ -169,7 +172,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
 }
 .nav-dropdown-trigger:hover,
 .nav-dropdown-trigger:focus-visible { background: var(--offwhite); color: var(--dark); }
-.nav-dropdown-trigger.active { color: var(--olive-dk); font-weight: 600; }
+.nav-dropdown-trigger.active { color: var(--salmon); font-weight: 600; }
 .nav-caret { width: 11px; height: 11px; flex-shrink: 0; transition: transform var(--transition); }
 .nav-dropdown.open .nav-caret,
 .mobile-nav-dropdown.open .nav-caret { transform: rotate(180deg); }
@@ -233,7 +236,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
   transition: background var(--transition);
 }
 .mobile-nav-dropdown-trigger:hover { background: var(--offwhite); }
-.mobile-nav-dropdown-trigger.active { color: var(--olive-dk); font-weight: 600; }
+.mobile-nav-dropdown-trigger.active { color: var(--salmon); font-weight: 600; }
 .mobile-nav-dropdown-menu {
   display: none;
   flex-direction: column;
@@ -292,7 +295,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
   transition: background var(--transition);
 }
 .mobile-nav a:hover { background: var(--offwhite); }
-.mobile-nav a.active { color: var(--olive-dk); font-weight: 600; }
+.mobile-nav a.active { color: var(--salmon); font-weight: 600; }
 .mobile-nav .nav-cta {
   margin: 8px 24px 0;
   text-align: center;
@@ -328,9 +331,10 @@ p  { font-size: 1rem; color: var(--charcoal); }
 }
 .btn svg { width: 18px; height: 18px; flex-shrink: 0; }
 .btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-/* Teal is the primary action color (Calculate, Send Request, main CTAs). */
-.btn-primary { background: var(--olive); color: var(--white); }
-.btn-primary:hover { background: var(--olive-dk); }
+/* Coral is the primary CTA color — Calculate, Send Request, Get a Free
+   Quote, hero buttons — restored for energy/conversion emphasis. */
+.btn-primary { background: var(--salmon); color: var(--white); }
+.btn-primary:hover { background: var(--salmon-dk); }
 .btn-outline {
   background: transparent;
   color: var(--white);
@@ -339,10 +343,11 @@ p  { font-size: 1rem; color: var(--charcoal); }
 .btn-outline:hover { background: rgba(255,255,255,.12); border-color: var(--white); }
 .btn-dark { background: var(--dark); color: var(--white); }
 .btn-dark:hover { background: var(--charcoal-dk); }
-/* Coral, used sparingly — reserved for the highest-intent "talk to us" CTAs
-   (Ready to Schedule, Book My Free Visit) so they stand out from teal. */
-.btn-olive { background: var(--salmon); color: var(--white); }
-.btn-olive:hover { background: var(--salmon-dk); }
+/* Teal secondary — Ready to Schedule / Book My Free Visit — keeps coral
+   from becoming the only color on a page that already has a coral
+   primary button nearby. */
+.btn-olive { background: var(--olive); color: var(--dark); }
+.btn-olive:hover { background: var(--olive-dk); color: var(--white); }
 .btn-outline-dark {
   background: transparent;
   color: var(--dark);
@@ -472,7 +477,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
   font-weight: 700;
   letter-spacing: .12em;
   text-transform: uppercase;
-  color: var(--olive-dk);
+  color: var(--salmon);
   margin-bottom: 10px;
 }
 .section-header h2 { margin-bottom: 14px; }
@@ -480,7 +485,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
 .divider {
   width: 48px;
   height: 3px;
-  background: var(--olive);
+  background: var(--salmon);
   border-radius: 2px;
   margin: 14px auto 0;
 }
@@ -616,7 +621,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
 .cta-banner .container { position: relative; z-index: 1; }
 .cta-banner h2 { color: var(--white); font-size: clamp(1.8rem, 3.5vw, 2.6rem); margin-bottom: 12px; text-shadow: 0 2px 10px rgba(0,0,0,.25); }
 .cta-banner p { color: rgba(255,255,255,.92); margin-bottom: 28px; font-size: 1.05rem; }
-.btn-white { background: var(--white); color: var(--olive-dk); }
+.btn-white { background: var(--white); color: var(--salmon); }
 .btn-white:hover { background: var(--mint); }
 
 /* ============================================
@@ -657,7 +662,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
   font-weight: 700;
   letter-spacing: .14em;
   text-transform: uppercase;
-  color: var(--olive);
+  color: var(--salmon);
   margin-bottom: 10px;
 }
 
@@ -1174,7 +1179,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
   font-size: .84rem;
   font-weight: 700;
   letter-spacing: .03em;
-  color: var(--olive);
+  color: var(--salmon);
   transition: gap var(--transition), color var(--transition);
 }
 .choice-card:hover .choice-cta { gap: 10px; color: var(--mint); }
