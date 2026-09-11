@@ -173,12 +173,26 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultBox = resCalc.querySelector('#calcResult');
     const resultAmount = resCalc.querySelector('#calcResultAmount');
     const scheduleBtn = resCalc.querySelector('#scheduleBtn');
+    const bigJobBox = resCalc.querySelector('#calcBigJob');
+    const bigJobScheduleBtn = resCalc.querySelector('#bigJobScheduleBtn');
     const leadForm = resCalc.querySelector('#calcLeadForm');
+
+    // Thresholds beyond which a flat $/sq ft estimate stops being reliable —
+    // route to a free on-site visit instead of a possibly-wrong price.
+    const MAX_ROOMS_FOR_ESTIMATE = 10;
+    const MAX_STAIRCASES_FOR_ESTIMATE = 4;
 
     let lastEstimate = 0;
 
+    function openLeadForm() {
+      leadForm.classList.add('show');
+      leadForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     calcBtn.addEventListener('click', () => {
       let total = 0;
+      let roomsCount = 0;
+      let stairCount = 0;
       const breakdown = [];
       resCalc.querySelectorAll('.calc-item input[type="number"]').forEach(input => {
         const qty = parseInt(input.value, 10) || 0;
@@ -188,18 +202,31 @@ document.addEventListener('DOMContentLoaded', () => {
           total += lineTotal;
           breakdown.push(`${qty}x ${input.dataset.label} ($${lineTotal.toFixed(2)})`);
         }
+        if (input.id === 'calc-stair') {
+          stairCount += qty;
+        } else {
+          roomsCount += qty;
+        }
       });
       lastEstimate = total;
-      resultAmount.textContent = total > 0 ? `$${total.toFixed(2)}` : '$0';
       resCalc.dataset.breakdown = breakdown.join(', ') || 'No rooms selected';
-      resultBox.classList.add('show');
-      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+      const isBigJob = roomsCount > MAX_ROOMS_FOR_ESTIMATE || stairCount > MAX_STAIRCASES_FOR_ESTIMATE;
+
+      if (isBigJob) {
+        resultBox.classList.remove('show');
+        bigJobBox.classList.add('show');
+        bigJobBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      } else {
+        bigJobBox.classList.remove('show');
+        resultAmount.textContent = total > 0 ? `$${total.toFixed(2)}` : '$0';
+        resultBox.classList.add('show');
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
     });
 
-    scheduleBtn.addEventListener('click', () => {
-      leadForm.classList.add('show');
-      leadForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+    scheduleBtn.addEventListener('click', openLeadForm);
+    bigJobScheduleBtn.addEventListener('click', openLeadForm);
 
     const leadSubmitBtn = resCalc.querySelector('#calcSubmitBtn');
     const leadThankYou = resCalc.querySelector('#calcThankYou');
@@ -253,6 +280,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultAmount = comCalc.querySelector('#calcResultAmount');
     const errorBox = comCalc.querySelector('#calcError');
     const scheduleBtn = comCalc.querySelector('#scheduleBtn');
+    const bigJobBox = comCalc.querySelector('#calcBigJob');
+    const bigJobScheduleBtn = comCalc.querySelector('#bigJobScheduleBtn');
     const leadForm = comCalc.querySelector('#calcLeadForm');
 
     const SQFT_RANGES = [
@@ -308,6 +337,7 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       resultBox.classList.remove('show');
+      bigJobBox.classList.remove('show');
       errorBox.classList.remove('show');
     }
 
@@ -333,6 +363,11 @@ document.addEventListener('DOMContentLoaded', () => {
       errorBox.classList.remove('show');
     });
 
+    function openLeadForm() {
+      leadForm.classList.add('show');
+      leadForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
     calcBtn.addEventListener('click', () => {
       const floorBlocks = [...floorsContainer.querySelectorAll('.floor-block')];
       const selections = floorBlocks.map(block => block.querySelector('.range-btn.active'));
@@ -344,45 +379,43 @@ document.addEventListener('DOMContentLoaded', () => {
         errorBox.textContent = `Please select a square footage range for floor${missing.length > 1 ? 's' : ''} ${missing.join(', ')}.`;
         errorBox.classList.add('show');
         resultBox.classList.remove('show');
+        bigJobBox.classList.remove('show');
         return;
       }
       errorBox.classList.remove('show');
 
-      let lowTotal = 0, highTotal = 0, customFloors = [];
-      const floorDescriptions = selections.map((sel, i) => {
-        if (sel.dataset.custom) {
-          customFloors.push(i + 1);
-          return `Floor ${i + 1}: 10,000+ sq ft (custom quote needed)`;
-        }
-        const low = parseFloat(sel.dataset.low);
-        const high = parseFloat(sel.dataset.high);
-        lowTotal += low * RATE_PER_SQFT;
-        highTotal += high * RATE_PER_SQFT;
-        return `Floor ${i + 1}: ${low.toLocaleString()}–${high.toLocaleString()} sq ft`;
-      });
+      const floorCount = selections.length;
+      const singleSelection = selections[0];
+      // A flat per-sq-ft number is only trustworthy for one floor within a
+      // known bracket. Multi-floor buildings, or anything 10,000+ sq ft,
+      // route to a free on-site visit instead of guessing a price.
+      const isBigJob = floorCount > 1 || !!singleSelection.dataset.custom;
 
-      const pricedFloorCount = selections.length - customFloors.length;
+      const floorDescriptions = selections.map((sel, i) =>
+        sel.dataset.custom
+          ? `Floor ${i + 1}: 10,000+ sq ft`
+          : `Floor ${i + 1}: ${parseFloat(sel.dataset.low).toLocaleString()}–${parseFloat(sel.dataset.high).toLocaleString()} sq ft`
+      );
 
-      if (pricedFloorCount === 0) {
-        resultAmount.textContent = 'Custom Quote';
+      if (isBigJob) {
+        resultBox.classList.remove('show');
+        bigJobBox.classList.add('show');
+        lastEstimateLabel = `${floorDescriptions.join('; ')} — large job, on-site quote needed`;
+        bigJobBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
       } else {
-        resultAmount.textContent = `$${lowTotal.toFixed(2)} – $${highTotal.toFixed(2)}`;
+        // Single floor, known bracket — price off the upper limit of that range.
+        const high = parseFloat(singleSelection.dataset.high);
+        const total = high * RATE_PER_SQFT;
+        resultAmount.textContent = `$${total.toFixed(2)}`;
+        lastEstimateLabel = `${floorDescriptions[0]} — est. $${total.toFixed(2)}`;
+        bigJobBox.classList.remove('show');
+        resultBox.classList.add('show');
+        resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
-
-      resultBox.querySelector('.calc-result-note').textContent = customFloors.length
-        ? `Estimate covers ${pricedFloorCount} of ${selections.length} floor(s). Floor${customFloors.length > 1 ? 's' : ''} ${customFloors.join(', ')} (10,000+ sq ft) need${customFloors.length > 1 ? '' : 's'} a quick on-site walkthrough for an accurate price.`
-        : 'Estimated range based on the square footage bracket selected for each floor. Your final quote is confirmed after an on-site assessment.';
-
-      lastEstimateLabel = `${floorDescriptions.join('; ')} — est. ${pricedFloorCount === 0 ? 'custom quote needed' : `$${lowTotal.toFixed(2)}–$${highTotal.toFixed(2)}`}`;
-
-      resultBox.classList.add('show');
-      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
-    scheduleBtn.addEventListener('click', () => {
-      leadForm.classList.add('show');
-      leadForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    });
+    scheduleBtn.addEventListener('click', openLeadForm);
+    bigJobScheduleBtn.addEventListener('click', openLeadForm);
 
     const leadSubmitBtn = comCalc.querySelector('#calcSubmitBtn');
     const leadThankYou = comCalc.querySelector('#calcThankYou');
