@@ -211,19 +211,21 @@ document.addEventListener('DOMContentLoaded', () => {
         [name, phone, email].forEach(f => f.reportValidity && f.reportValidity());
         return;
       }
+      const notes = resCalc.querySelector('#calcNotes');
       const data = {
         form_source: 'Residential Calculator — Ready to Schedule',
         name: name.value,
         phone: phone.value,
         email: email.value,
         estimated_total: `$${lastEstimate.toFixed(2)}`,
-        rooms_selected: resCalc.dataset.breakdown || 'No rooms selected'
+        rooms_selected: resCalc.dataset.breakdown || 'No rooms selected',
+        notes: (notes && notes.value.trim()) || '(none)'
       };
       leadSubmitBtn.disabled = true;
       leadSubmitBtn.textContent = 'Sending...';
       submitToFormspree(data, {
         onSuccess: () => {
-          leadForm.querySelectorAll('input, button:not(#calcThankYou *)').forEach(el => el.style.display = 'none');
+          leadForm.querySelectorAll('.form-row, .form-group, button:not(#calcThankYou *)').forEach(el => el.style.display = 'none');
           leadForm.querySelector('h4').style.display = 'none';
           leadThankYou.classList.add('show');
         },
@@ -392,18 +394,20 @@ document.addEventListener('DOMContentLoaded', () => {
         [name, phone, email].forEach(f => f.reportValidity && f.reportValidity());
         return;
       }
+      const notes = comCalc.querySelector('#calcNotes');
       const data = {
         form_source: 'Commercial Calculator — Ready to Schedule',
         name: name.value,
         phone: phone.value,
         email: email.value,
-        building_details: lastEstimateLabel || 'Not calculated'
+        building_details: lastEstimateLabel || 'Not calculated',
+        notes: (notes && notes.value.trim()) || '(none)'
       };
       leadSubmitBtn.disabled = true;
       leadSubmitBtn.textContent = 'Sending...';
       submitToFormspree(data, {
         onSuccess: () => {
-          leadForm.querySelectorAll('input, button:not(#calcThankYou *)').forEach(el => el.style.display = 'none');
+          leadForm.querySelectorAll('.form-row, .form-group, button:not(#calcThankYou *)').forEach(el => el.style.display = 'none');
           leadForm.querySelector('h4').style.display = 'none';
           leadThankYou.classList.add('show');
         },
