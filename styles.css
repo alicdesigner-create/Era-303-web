@@ -990,6 +990,30 @@ p  { font-size: 1rem; color: var(--charcoal); }
 .hero-content--center .hero-sub { margin-left: auto; margin-right: auto; }
 .hero-content--center .hero-stars { justify-content: center; margin-top: 8px; }
 
+/* Entrance animation — plays once on page load, each element from a
+   different direction so the hero feels alive the moment it appears. */
+@keyframes hero-drop      { from { opacity: 0; transform: translateY(-24px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes hero-slide-l   { from { opacity: 0; transform: translateX(-50px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes hero-rise      { from { opacity: 0; transform: translateY(24px); }  to { opacity: 1; transform: translateY(0); } }
+@keyframes card-slide-l   { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+@keyframes card-slide-r   { from { opacity: 0; transform: translateX(60px); }  to { opacity: 1; transform: translateX(0); } }
+@keyframes hero-fade-in   { from { opacity: 0; } to { opacity: 1; } }
+
+.hero-badge { animation: hero-drop .7s cubic-bezier(.2,.8,.2,1) .1s both; }
+.hero-content--center h1 { animation: hero-slide-l .75s cubic-bezier(.2,.8,.2,1) .28s both; }
+.hero-content--center .hero-sub { animation: hero-rise .75s cubic-bezier(.2,.8,.2,1) .45s both; }
+.choice-grid .choice-card:nth-child(1) { animation: card-slide-l .8s cubic-bezier(.2,.8,.2,1) .62s both; }
+.choice-grid .choice-card:nth-child(2) { animation: card-slide-r .8s cubic-bezier(.2,.8,.2,1) .74s both; }
+.hero-content--center .hero-stars { animation: hero-fade-in .8s ease .95s both; }
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-badge,
+  .hero-content--center h1,
+  .hero-content--center .hero-sub,
+  .choice-grid .choice-card,
+  .hero-content--center .hero-stars { animation: none; }
+}
+
 .choice-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
