@@ -207,11 +207,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultAmount = resCalc.querySelector('#calcResultAmount');
     const scheduleBtn = resCalc.querySelector('#scheduleBtn');
     const bigJobBox = resCalc.querySelector('#calcBigJob');
-    const bigJobScheduleBtn = resCalc.querySelector('#bigJobScheduleBtn');
     const leadForm = resCalc.querySelector('#calcLeadForm');
 
     // Thresholds beyond which a flat $/sq ft estimate stops being reliable —
-    // route to a free on-site visit instead of a possibly-wrong price.
+    // point to Contact for a personalized quote instead of a possibly-wrong price.
     const MAX_ROOMS_FOR_ESTIMATE = 10;
     const MAX_STAIRCASES_FOR_ESTIMATE = 4;
 
@@ -259,7 +258,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     scheduleBtn.addEventListener('click', openLeadForm);
-    bigJobScheduleBtn.addEventListener('click', openLeadForm);
 
     const leadSubmitBtn = resCalc.querySelector('#calcSubmitBtn');
     const leadThankYou = resCalc.querySelector('#calcThankYou');
@@ -314,7 +312,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorBox = comCalc.querySelector('#calcError');
     const scheduleBtn = comCalc.querySelector('#scheduleBtn');
     const bigJobBox = comCalc.querySelector('#calcBigJob');
-    const bigJobScheduleBtn = comCalc.querySelector('#bigJobScheduleBtn');
     const leadForm = comCalc.querySelector('#calcLeadForm');
 
     const SQFT_RANGES = [
@@ -448,7 +445,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     scheduleBtn.addEventListener('click', openLeadForm);
-    bigJobScheduleBtn.addEventListener('click', openLeadForm);
 
     const leadSubmitBtn = comCalc.querySelector('#calcSubmitBtn');
     const leadThankYou = comCalc.querySelector('#calcThankYou');
