@@ -76,6 +76,39 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
+  // Residential/Commercial now live under the "Services" dropdown — highlight
+  // its trigger (not a plain <a>, so the loop above can't reach it) when
+  // either of those pages is open.
+  if (currentPage === 'residential.html' || currentPage === 'commercial.html') {
+    document.querySelectorAll('.nav-dropdown-trigger, .mobile-nav-dropdown-trigger').forEach(btn => {
+      btn.classList.add('active');
+    });
+  }
+
+  /* ---- Services dropdown (desktop hover + click, mobile tap) ---- */
+  document.querySelectorAll('.nav-dropdown-trigger, .mobile-nav-dropdown-trigger').forEach(trigger => {
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const container = trigger.closest('.nav-dropdown, .mobile-nav-dropdown');
+      const willOpen = !container.classList.contains('open');
+      document.querySelectorAll('.nav-dropdown.open, .mobile-nav-dropdown.open').forEach(open => {
+        if (open !== container) {
+          open.classList.remove('open');
+          open.querySelector('button').setAttribute('aria-expanded', 'false');
+        }
+      });
+      container.classList.toggle('open', willOpen);
+      trigger.setAttribute('aria-expanded', String(willOpen));
+    });
+  });
+  document.addEventListener('click', (e) => {
+    document.querySelectorAll('.nav-dropdown.open, .mobile-nav-dropdown.open').forEach(open => {
+      if (!open.contains(e.target)) {
+        open.classList.remove('open');
+        open.querySelector('button').setAttribute('aria-expanded', 'false');
+      }
+    });
+  });
 
   /* ---- Hero video: slow-motion playback ---- */
   const heroVideo = document.querySelector('.hero-video');
