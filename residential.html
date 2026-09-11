@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Residential Carpet &amp; Floor Cleaning | ERA 303 Services — Denver, CO</title>
+  <meta name="description" content="Instant online estimate for residential carpet and floor cleaning in Denver. Living rooms, bedrooms, stairs, closets, hallways &amp; more — 17 years of trusted service." />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="container">
+      <span>Serving Denver &amp; Surrounding Areas &middot; 17 Years of Excellence</span>
+      <a href="tel:+13039161095">(303) 916-1095</a>
+    </div>
+  </div>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container">
+      <nav class="nav-inner">
+        <a href="index.html" class="nav-logo">
+          <img src="assets/logo-icon.jpg" alt="ERA 303 Services Logo" />
+          <span class="nav-logo-text">ERA <span>303</span> SERVICES</span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="residential.html" class="active">Residential</a></li>
+          <li><a href="commercial.html">Commercial</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="contact.html" class="nav-cta">Free Quote</a></li>
+        </ul>
+        <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+          <span></span><span></span><span></span>
+        </button>
+      </nav>
+    </div>
+    <nav class="mobile-nav" aria-label="Mobile navigation">
+      <a href="index.html">Home</a>
+      <a href="residential.html" class="active">Residential</a>
+      <a href="commercial.html">Commercial</a>
+      <a href="contact.html">Contact</a>
+      <a href="contact.html" class="nav-cta">Free Quote</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- PAGE HERO -->
+    <section class="page-hero">
+      <div class="container">
+        <span class="overline">For Your Home</span>
+        <h1>Residential Carpet &amp; Floor Cleaning</h1>
+        <p>Deep, safe, professional cleaning for every room in your home — get an instant estimate below.</p>
+      </div>
+    </section>
+
+    <!-- SERVICES OVERVIEW -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header fade-up">
+          <span class="overline">What We Do</span>
+          <h2>Residential Services</h2>
+          <p>From deep carpet cleaning to hard floor restoration, we handle every surface in your home with care.</p>
+          <div class="divider"></div>
+        </div>
+        <div class="services-grid">
+          <div class="service-card fade-up delay-1">
+            <div class="service-icon">&#129529;</div>
+            <h3>Full Carpet Cleaning</h3>
+            <p>Deep steam cleaning that removes dirt, allergens, and stains down to the fiber base. Safe for kids and pets.</p>
+          </div>
+          <div class="service-card fade-up delay-2">
+            <div class="service-icon">&#129699;</div>
+            <h3>Tile &amp; Hard Floor Cleaning</h3>
+            <p>High-pressure cleaning and grout sealing to restore the original shine of tile and hard surfaces.</p>
+          </div>
+          <div class="service-card fade-up delay-3">
+            <div class="service-icon">&#128062;</div>
+            <h3>Pet Odor Treatment</h3>
+            <p>Enzymatic treatment that eliminates pet odors and stains at the source — not just masks them.</p>
+          </div>
+          <div class="service-card fade-up delay-4">
+            <div class="service-icon">&#128168;</div>
+            <h3>Odor Removal / Ozone</h3>
+            <p>Industrial-grade ozone fogging for smoke, mold, and persistent odors — reaches every surface.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section class="section section-alt" id="estimate">
+      <div class="container">
+        <div class="section-header fade-up">
+          <span class="overline">Instant Estimate</span>
+          <h2>Calculate Your Cleaning Cost</h2>
+          <p>Tell us how many of each room you need cleaned. We price at $0.21 per sq ft, using the maximum size listed for each room type.</p>
+          <div class="divider"></div>
+        </div>
+
+        <div class="calculator-card fade-up" id="residentialCalculator">
+          <div class="calc-grid">
+            <div class="calc-item">
+              <label for="calc-living">Living Rooms</label>
+              <input type="number" id="calc-living" min="0" value="0" data-sqft="300" data-label="Living Room" />
+              <span class="calc-note">Up to 300 sq ft each</span>
+            </div>
+            <div class="calc-item">
+              <label for="calc-bedroom">Bedrooms</label>
+              <input type="number" id="calc-bedroom" min="0" value="0" data-sqft="200" data-label="Bedroom" />
+              <span class="calc-note">Up to 200 sq ft each</span>
+            </div>
+            <div class="calc-item">
+              <label for="calc-stair">Staircases</label>
+              <input type="number" id="calc-stair" min="0" value="0" data-sqft="60" data-label="Staircase" />
+              <span class="calc-note">Up to 14 stairs each</span>
+            </div>
+            <div class="calc-item">
+              <label for="calc-closet">Walk-in Closets</label>
+              <input type="number" id="calc-closet" min="0" value="0" data-sqft="40" data-label="Walk-in Closet" />
+              <span class="calc-note">Estimate shown; no strict size limit</span>
+            </div>
+            <div class="calc-item">
+              <label for="calc-hallway">Hallways</label>
+              <input type="number" id="calc-hallway" min="0" value="0" data-sqft="150" data-label="Hallway" />
+              <span class="calc-note">Up to 150 sq ft each</span>
+            </div>
+            <div class="calc-item">
+              <label for="calc-dining">Dining Rooms <span style="font-weight:400;color:var(--charcoal-lt);">(hard floor)</span></label>
+              <input type="number" id="calc-dining" min="0" value="0" data-sqft="300" data-label="Dining Room (floor)" />
+              <span class="calc-note">Up to 300 sq ft each</span>
+            </div>
+            <div class="calc-item">
+              <label for="calc-open">Open Space</label>
+              <input type="number" id="calc-open" min="0" value="0" data-sqft="500" data-label="Open Space" />
+              <span class="calc-note">Up to 500 sq ft each</span>
+            </div>
+          </div>
+
+          <div class="calc-actions">
+            <button type="button" class="btn btn-primary" id="calcBtn">Calculate Estimate</button>
+          </div>
+
+          <div class="calc-result" id="calcResult">
+            <div class="calc-result-amount" id="calcResultAmount">$0</div>
+            <p class="calc-result-note">Estimated total based on maximum room sizes. Your final quote is confirmed after a quick on-site look.</p>
+            <button type="button" class="btn btn-olive" id="scheduleBtn">Ready to Schedule &rarr;</button>
+          </div>
+
+          <div class="calc-lead-form" id="calcLeadForm">
+            <h4>Great! Where should we send your info?</h4>
+            <div class="form-row">
+              <div class="form-group">
+                <label for="calcName">Name *</label>
+                <input type="text" id="calcName" placeholder="Jane Smith" required />
+              </div>
+              <div class="form-group">
+                <label for="calcPhone">Phone *</label>
+                <input type="tel" id="calcPhone" placeholder="(303) 000-0000" required />
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="calcEmail">Email *</label>
+              <input type="email" id="calcEmail" placeholder="jane@example.com" required />
+            </div>
+            <button type="button" class="btn btn-primary form-submit" id="calcSubmitBtn">Send My Request</button>
+            <div class="calc-thank-you" id="calcThankYou">
+              <div class="thank-you-icon">&#9989;</div>
+              <h3>Thank You!</h3>
+              <p>Jesse will reach out shortly to confirm your appointment. For urgent requests, call <a href="tel:+13039161095" style="color:var(--salmon);font-weight:600;">(303) 916-1095</a>.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA BANNER -->
+    <section class="cta-banner">
+      <div class="container">
+        <h2 class="fade-up">Not Sure Which Service You Need?</h2>
+        <p class="fade-up delay-1">Call us or fill out a quick form — we'll assess your space and recommend the right solution.</p>
+        <a href="contact.html" class="btn btn-white fade-up delay-2">Get a Free Quote</a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <div class="footer-logo-wrap">
+            <img src="assets/logo-icon.jpg" alt="ERA 303 Services Logo" />
+            <div class="footer-logo-name">ERA <span>303</span> SERVICES</div>
+          </div>
+          <p class="footer-tagline">Denver's trusted carpet and floor cleaning professionals. Serving the metro area with integrity and excellence for over 17 years.</p>
+        </div>
+        <div>
+          <h4>Quick Links</h4>
+          <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="residential.html">Residential Cleaning</a></li>
+            <li><a href="commercial.html">Commercial Cleaning</a></li>
+            <li><a href="contact.html">Contact</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Service Areas</h4>
+          <p style="font-size:.88rem;line-height:1.8;color:rgba(255,255,255,.65);">Denver, Aurora, Lakewood, Englewood, Centennial, Thornton, Westminster, Arvada, Commerce City, Littleton, Parker &amp; Castle Rock.</p>
+        </div>
+        <div>
+          <h4>Contact Us</h4>
+          <ul class="footer-contact">
+            <li><span class="fc-icon">&#128222;</span><a href="tel:+13039161095">(303) 916-1095</a></li>
+            <li><span class="fc-icon">&#9993;&#65039;</span><a href="mailto:era303services@gmail.com">era303services@gmail.com</a></li>
+            <li><span class="fc-icon">&#128336;</span><span>Mon&ndash;Sat &nbsp;7:00 AM &ndash; 6:00 PM</span></li>
+            <li><span class="fc-icon">&#128205;</span><span>Denver Metro, CO</span></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>&copy; 2025 ERA 303 Services. All rights reserved.</span>
+        <span>Proudly serving Denver, CO for 17 years.</span>
+        <span>Designed &amp; created by <a href="https://tesographics.com" target="_blank" rel="noopener" class="footer-credit">tesographics.com</a></span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
