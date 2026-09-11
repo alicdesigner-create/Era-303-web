@@ -238,11 +238,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   /* ================================================
      COMMERCIAL CALCULATOR
+     Each floor gets its own independent sq ft range picker,
+     since different floors of the same building are often
+     different sizes.
      ================================================ */
   const comCalc = document.getElementById('commercialCalculator');
   if (comCalc) {
     const floorsInput = comCalc.querySelector('#calcFloors');
-    const rangeButtons = comCalc.querySelectorAll('.range-btn');
+    const floorsContainer = comCalc.querySelector('#floorsContainer');
     const calcBtn = comCalc.querySelector('#calcBtn');
     const resultBox = comCalc.querySelector('#calcResult');
     const resultAmount = comCalc.querySelector('#calcResultAmount');
@@ -250,45 +253,126 @@ document.addEventListener('DOMContentLoaded', () => {
     const scheduleBtn = comCalc.querySelector('#scheduleBtn');
     const leadForm = comCalc.querySelector('#calcLeadForm');
 
-    let selectedRange = null;
+    const SQFT_RANGES = [
+      { low: 1000, high: 2000 },
+      { low: 2000, high: 3000 },
+      { low: 3000, high: 4000 },
+      { low: 4000, high: 5000 },
+      { low: 5000, high: 6000 },
+      { low: 6000, high: 7000 },
+      { low: 7000, high: 8000 },
+      { low: 8000, high: 9000 },
+      { low: 9000, high: 10000 }
+    ];
+
     let lastEstimateLabel = '';
 
-    rangeButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        rangeButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        selectedRange = btn;
-        errorBox.classList.remove('show');
+    function rangePickerHTML(floorNum) {
+      const buttons = SQFT_RANGES.map(r =>
+        `<button type="button" class="range-btn" data-low="${r.low}" data-high="${r.high}">${r.low.toLocaleString()} &ndash; ${r.high.toLocaleString()} sq ft</button>`
+      ).join('');
+      return `
+        <div class="floor-block" data-floor="${floorNum}">
+          <label class="floor-block-label">Floor ${floorNum} &mdash; Approximate Square Footage</label>
+          <div class="range-picker">
+            ${buttons}
+            <button type="button" class="range-btn" data-custom="true">10,000+ sq ft</button>
+          </div>
+        </div>`;
+    }
+
+    function renderFloors(count) {
+      // Remember any ranges already picked so re-rendering (e.g. typing
+      // "1" then "12") doesn't wipe out selections for floors that still exist.
+      const previousSelections = {};
+      floorsContainer.querySelectorAll('.floor-block').forEach(block => {
+        const active = block.querySelector('.range-btn.active');
+        if (active) previousSelections[block.dataset.floor] = active.dataset;
       });
+
+      floorsContainer.innerHTML = '';
+      for (let i = 1; i <= count; i++) {
+        floorsContainer.insertAdjacentHTML('beforeend', rangePickerHTML(i));
+      }
+
+      Object.keys(previousSelections).forEach(floorNum => {
+        const block = floorsContainer.querySelector(`.floor-block[data-floor="${floorNum}"]`);
+        if (!block) return;
+        const prev = previousSelections[floorNum];
+        const match = [...block.querySelectorAll('.range-btn')].find(btn =>
+          prev.custom ? btn.dataset.custom : (btn.dataset.low === prev.low && btn.dataset.high === prev.high)
+        );
+        if (match) match.classList.add('active');
+      });
+
+      resultBox.classList.remove('show');
+      errorBox.classList.remove('show');
+    }
+
+    function clampFloors() {
+      let count = parseInt(floorsInput.value, 10);
+      if (!count || count < 1) count = 1;
+      if (count > 50) count = 50;
+      floorsInput.value = count;
+      return count;
+    }
+
+    floorsInput.addEventListener('input', () => renderFloors(clampFloors()));
+    floorsInput.addEventListener('blur', () => renderFloors(clampFloors()));
+    renderFloors(clampFloors());
+
+    // Event delegation: one listener handles range-btn clicks in any floor block.
+    floorsContainer.addEventListener('click', (e) => {
+      const btn = e.target.closest('.range-btn');
+      if (!btn) return;
+      const block = btn.closest('.floor-block');
+      block.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      errorBox.classList.remove('show');
     });
 
     calcBtn.addEventListener('click', () => {
-      const floors = parseInt(floorsInput.value, 10) || 0;
-      if (floors < 1 || !selectedRange) {
-        errorBox.textContent = !selectedRange
-          ? 'Please select an approximate square footage range.'
-          : 'Please enter at least 1 floor.';
+      const floorBlocks = [...floorsContainer.querySelectorAll('.floor-block')];
+      const selections = floorBlocks.map(block => block.querySelector('.range-btn.active'));
+
+      if (selections.some(sel => !sel)) {
+        const missing = floorBlocks
+          .map((block, i) => (selections[i] ? null : i + 1))
+          .filter(n => n !== null);
+        errorBox.textContent = `Please select a square footage range for floor${missing.length > 1 ? 's' : ''} ${missing.join(', ')}.`;
         errorBox.classList.add('show');
         resultBox.classList.remove('show');
         return;
       }
       errorBox.classList.remove('show');
 
-      if (selectedRange.dataset.custom) {
+      let lowTotal = 0, highTotal = 0, customFloors = [];
+      const floorDescriptions = selections.map((sel, i) => {
+        if (sel.dataset.custom) {
+          customFloors.push(i + 1);
+          return `Floor ${i + 1}: 10,000+ sq ft (custom quote needed)`;
+        }
+        const low = parseFloat(sel.dataset.low);
+        const high = parseFloat(sel.dataset.high);
+        lowTotal += low * RATE_PER_SQFT;
+        highTotal += high * RATE_PER_SQFT;
+        return `Floor ${i + 1}: ${low.toLocaleString()}–${high.toLocaleString()} sq ft`;
+      });
+
+      const pricedFloorCount = selections.length - customFloors.length;
+
+      if (pricedFloorCount === 0) {
         resultAmount.textContent = 'Custom Quote';
-        resultBox.querySelector('.calc-result-note').textContent =
-          'Spaces over 10,000 sq ft per floor need a quick on-site walkthrough for an accurate price — schedule below and we’ll follow up fast.';
-        lastEstimateLabel = `${floors} floor(s), 10,000+ sq ft each — custom quote needed`;
       } else {
-        const low = parseFloat(selectedRange.dataset.low);
-        const high = parseFloat(selectedRange.dataset.high);
-        const lowTotal = low * floors * RATE_PER_SQFT;
-        const highTotal = high * floors * RATE_PER_SQFT;
         resultAmount.textContent = `$${lowTotal.toFixed(2)} – $${highTotal.toFixed(2)}`;
-        resultBox.querySelector('.calc-result-note').textContent =
-          'Estimated range based on the square footage bracket selected. Your final quote is confirmed after an on-site assessment.';
-        lastEstimateLabel = `${floors} floor(s), ${low.toLocaleString()}–${high.toLocaleString()} sq ft each — est. $${lowTotal.toFixed(2)}–$${highTotal.toFixed(2)}`;
       }
+
+      resultBox.querySelector('.calc-result-note').textContent = customFloors.length
+        ? `Estimate covers ${pricedFloorCount} of ${selections.length} floor(s). Floor${customFloors.length > 1 ? 's' : ''} ${customFloors.join(', ')} (10,000+ sq ft) need${customFloors.length > 1 ? '' : 's'} a quick on-site walkthrough for an accurate price.`
+        : 'Estimated range based on the square footage bracket selected for each floor. Your final quote is confirmed after an on-site assessment.';
+
+      lastEstimateLabel = `${floorDescriptions.join('; ')} — est. ${pricedFloorCount === 0 ? 'custom quote needed' : `$${lowTotal.toFixed(2)}–$${highTotal.toFixed(2)}`}`;
+
       resultBox.classList.add('show');
       resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });

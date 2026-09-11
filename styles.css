@@ -301,27 +301,42 @@ p  { font-size: 1rem; color: var(--charcoal); }
 .stars { color: #fbbf24; font-size: 1.1rem; letter-spacing: 2px; }
 
 /* ============================================
-   TRUST STRIP
+   SERVICES MARQUEE
+   Infinite left-scrolling strip of services, aqua text on white.
+   Track holds the item list twice back-to-back so translateX(-50%)
+   loops seamlessly.
    ============================================ */
-.trust-strip {
-  background: var(--olive);
-  padding: 18px 0;
+.services-marquee {
+  background: var(--white);
+  padding: 20px 0;
+  overflow: hidden;
+  border-top: 1px solid #ece9e3;
+  border-bottom: 1px solid #ece9e3;
 }
-.trust-strip ul {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 10px 30px;
-}
-.trust-strip li {
-  font-size: .88rem;
-  font-weight: 600;
-  color: var(--dark);
+.marquee-track {
   display: flex;
   align-items: center;
-  gap: 7px;
+  gap: 16px;
+  width: max-content;
+  animation: marquee-scroll 26s linear infinite;
 }
-.trust-strip li::before { content: '✔'; color: #2f9186; font-size: .9rem; }
+.services-marquee:hover .marquee-track { animation-play-state: paused; }
+.marquee-item {
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--olive);
+  white-space: nowrap;
+}
+.marquee-dot { color: var(--olive); opacity: .45; font-size: .9rem; }
+@keyframes marquee-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track { animation: none; }
+}
 
 /* ============================================
    SECTION COMMON
@@ -1084,7 +1099,21 @@ p  { font-size: 1rem; color: var(--charcoal); }
 }
 .calc-error.show { display: block; }
 
-/* Commercial sq ft range picker */
+/* Commercial — one range picker per floor */
+.floors-container { margin-top: 22px; }
+.floor-block {
+  padding-bottom: 22px;
+  margin-bottom: 22px;
+  border-bottom: 1px dashed #ddeae7;
+}
+.floor-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.floor-block-label {
+  display: block;
+  font-size: .92rem;
+  font-weight: 700;
+  color: var(--dark);
+  margin-bottom: 12px;
+}
 .range-picker {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
