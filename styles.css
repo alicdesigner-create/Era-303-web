@@ -1298,6 +1298,29 @@ p  { font-size: 1rem; color: var(--charcoal); }
   color: var(--dark);
   margin-bottom: 12px;
 }
+.calc-result-prompt[hidden] { display: none; }
+
+/* Commercial calculator — shown inside the (always-visible) estimate card
+   when the combined selected square footage tops 20,000 sq ft. */
+.calc-largeproject {
+  margin: 20px 0;
+  padding: 18px 20px;
+  background: var(--white);
+  border: 1.5px solid var(--salmon);
+  border-radius: var(--radius);
+  text-align: left;
+}
+.calc-largeproject[hidden] { display: none; }
+.calc-largeproject-eyebrow {
+  display: block;
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--salmon-dk);
+  margin-bottom: 8px;
+}
+.calc-largeproject p { font-size: .88rem; line-height: 1.6; color: var(--charcoal); margin: 0; }
 
 /* "Bigger job" card — shown instead of a price when the room/staircase
    (or floor/sq ft) count crosses the threshold; a flat sq-ft formula

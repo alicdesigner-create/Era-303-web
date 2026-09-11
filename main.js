@@ -23,7 +23,7 @@ const ROOM_SQFT = {
   stair:    60,   // "up to 14 stairs" — no sq ft given by client, placeholder estimate
   closet:   40,   // "walk-in closet, no size limit" — no sq ft given by client, placeholder estimate
   hallway:  150,  // "up to 150 sq ft" — per client
-  dining:   300,  // "up to 300 sq ft" (hard floor, not carpet) — per client
+  familyRoom: 300, // "up to 300 sq ft" (hard floor, not carpet) — per client
   openspace:500   // "up to 500 sq ft" — per client
 };
 
@@ -214,14 +214,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const MAX_ROOMS_FOR_ESTIMATE = 10;
     const MAX_STAIRCASES_FOR_ESTIMATE = 4;
 
-    let lastEstimate = 0;
-
     function openLeadForm() {
       leadForm.classList.add('show');
       leadForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    calcBtn.addEventListener('click', () => {
+    // Reads the room inputs live — called both when calculating (to show a
+    // price) and again right when the lead is sent, so the email always
+    // reflects whatever is currently in the fields, even if the customer
+    // tweaks a number after calculating without hitting Calculate again.
+    function readRoomSelections() {
       let total = 0;
       let roomsCount = 0;
       let stairCount = 0;
@@ -240,8 +242,11 @@ document.addEventListener('DOMContentLoaded', () => {
           roomsCount += qty;
         }
       });
-      lastEstimate = total;
-      resCalc.dataset.breakdown = breakdown.join(', ') || 'No rooms selected';
+      return { total, roomsCount, stairCount, breakdownText: breakdown.join(', ') || 'No rooms selected' };
+    }
+
+    calcBtn.addEventListener('click', () => {
+      const { total, roomsCount, stairCount } = readRoomSelections();
 
       const isBigJob = roomsCount > MAX_ROOMS_FOR_ESTIMATE || stairCount > MAX_STAIRCASES_FOR_ESTIMATE;
 
@@ -270,13 +275,14 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const notes = resCalc.querySelector('#calcNotes');
+      const { total, breakdownText } = readRoomSelections();
       const data = {
         form_source: 'Residential Calculator — Ready to Schedule',
         name: name.value,
         phone: phone.value,
         email: email.value,
-        estimated_total: `$${lastEstimate.toFixed(2)}`,
-        rooms_selected: resCalc.dataset.breakdown || 'No rooms selected',
+        estimated_total: `$${total.toFixed(2)}`,
+        rooms_selected: breakdownText,
         notes: (notes && notes.value.trim()) || '(none)'
       };
       leadSubmitBtn.disabled = true;
@@ -311,8 +317,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultAmount = comCalc.querySelector('#calcResultAmount');
     const errorBox = comCalc.querySelector('#calcError');
     const scheduleBtn = comCalc.querySelector('#scheduleBtn');
-    const bigJobBox = comCalc.querySelector('#calcBigJob');
+    const largeProjectBox = comCalc.querySelector('#calcLargeProject');
+    const resultPrompt = comCalc.querySelector('#calcResultPrompt');
     const leadForm = comCalc.querySelector('#calcLeadForm');
+
+    // The open-ended "10,000+" bracket has no defined upper bound, so it's
+    // priced using this floor value — kept in one place in case it needs
+    // adjusting later. Combined-sq-ft threshold above which we recommend an
+    // on-site walkthrough instead of relying purely on the calculator.
+    const CUSTOM_BRACKET_SQFT = 10000;
+    const LARGE_PROJECT_THRESHOLD_SQFT = 20000;
 
     const SQFT_RANGES = [
       { low: 1000, high: 2000 },
@@ -367,7 +381,6 @@ document.addEventListener('DOMContentLoaded', () => {
       });
 
       resultBox.classList.remove('show');
-      bigJobBox.classList.remove('show');
       errorBox.classList.remove('show');
     }
 
@@ -398,50 +411,62 @@ document.addEventListener('DOMContentLoaded', () => {
       leadForm.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
-    calcBtn.addEventListener('click', () => {
+    // Reads the floor/range selections live — called both when calculating
+    // and again right when the lead is sent, so the email always matches
+    // whatever is currently selected even if it changed after calculating.
+    // Every floor is priced off the upper limit of its bracket (the
+    // open-ended "10,000+" bracket uses CUSTOM_BRACKET_SQFT), summed across
+    // all floors — the pricing formula and ranges themselves are unchanged.
+    function readFloorSelections() {
       const floorBlocks = [...floorsContainer.querySelectorAll('.floor-block')];
       const selections = floorBlocks.map(block => block.querySelector('.range-btn.active'));
-
       if (selections.some(sel => !sel)) {
-        const missing = floorBlocks
-          .map((block, i) => (selections[i] ? null : i + 1))
+        return { ok: false, floorBlocks, selections };
+      }
+
+      let combinedSqft = 0;
+      let total = 0;
+      const floorDescriptions = selections.map((sel, i) => {
+        const isCustom = !!sel.dataset.custom;
+        const repSqft = isCustom ? CUSTOM_BRACKET_SQFT : parseFloat(sel.dataset.high);
+        combinedSqft += repSqft;
+        total += repSqft * RATE_PER_SQFT;
+        return isCustom
+          ? `Floor ${i + 1}: 10,000+ sq ft`
+          : `Floor ${i + 1}: ${parseFloat(sel.dataset.low).toLocaleString()}–${parseFloat(sel.dataset.high).toLocaleString()} sq ft`;
+      });
+
+      const isLargeProject = combinedSqft > LARGE_PROJECT_THRESHOLD_SQFT;
+      const label = `${floorDescriptions.join('; ')} — combined ~${combinedSqft.toLocaleString()} sq ft, est. $${total.toFixed(2)}`
+        + (isLargeProject ? ' (large project — walkthrough recommended)' : '');
+
+      return { ok: true, total, combinedSqft, isLargeProject, label };
+    }
+
+    calcBtn.addEventListener('click', () => {
+      const result = readFloorSelections();
+
+      if (!result.ok) {
+        const missing = result.floorBlocks
+          .map((block, i) => (result.selections[i] ? null : i + 1))
           .filter(n => n !== null);
         errorBox.textContent = `Please select a square footage range for floor${missing.length > 1 ? 's' : ''} ${missing.join(', ')}.`;
         errorBox.classList.add('show');
         resultBox.classList.remove('show');
-        bigJobBox.classList.remove('show');
         return;
       }
       errorBox.classList.remove('show');
+      lastEstimateLabel = result.label;
 
-      const floorCount = selections.length;
-      const singleSelection = selections[0];
-      // A flat per-sq-ft number is only trustworthy for one floor within a
-      // known bracket. Multi-floor buildings, or anything 10,000+ sq ft,
-      // route to a free on-site visit instead of guessing a price.
-      const isBigJob = floorCount > 1 || !!singleSelection.dataset.custom;
-
-      const floorDescriptions = selections.map((sel, i) =>
-        sel.dataset.custom
-          ? `Floor ${i + 1}: 10,000+ sq ft`
-          : `Floor ${i + 1}: ${parseFloat(sel.dataset.low).toLocaleString()}–${parseFloat(sel.dataset.high).toLocaleString()} sq ft`
-      );
-
-      if (isBigJob) {
-        resultBox.classList.remove('show');
-        bigJobBox.classList.add('show');
-        lastEstimateLabel = `${floorDescriptions.join('; ')} — large job, on-site quote needed`;
-        bigJobBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      } else {
-        // Single floor, known bracket — price off the upper limit of that range.
-        const high = parseFloat(singleSelection.dataset.high);
-        const total = high * RATE_PER_SQFT;
-        resultAmount.textContent = `$${total.toFixed(2)}`;
-        lastEstimateLabel = `${floorDescriptions[0]} — est. $${total.toFixed(2)}`;
-        bigJobBox.classList.remove('show');
-        resultBox.classList.add('show');
-        resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
+      // The estimate is always shown — for projects over 20,000 combined
+      // sq ft we additionally recommend an on-site walkthrough instead of
+      // hiding the number.
+      resultAmount.textContent = `$${result.total.toFixed(2)}`;
+      largeProjectBox.hidden = !result.isLargeProject;
+      resultPrompt.hidden = result.isLargeProject;
+      scheduleBtn.textContent = result.isLargeProject ? 'Request a Walkthrough →' : 'Request a Quote →';
+      resultBox.classList.add('show');
+      resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
     scheduleBtn.addEventListener('click', openLeadForm);
@@ -457,12 +482,13 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const notes = comCalc.querySelector('#calcNotes');
+      const fresh = readFloorSelections();
       const data = {
         form_source: 'Commercial Calculator — Ready to Schedule',
         name: name.value,
         phone: phone.value,
         email: email.value,
-        building_details: lastEstimateLabel || 'Not calculated',
+        building_details: (fresh.ok ? fresh.label : lastEstimateLabel) || 'Not calculated',
         notes: (notes && notes.value.trim()) || '(none)'
       };
       leadSubmitBtn.disabled = true;

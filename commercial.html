@@ -144,15 +144,15 @@
             <div class="calc-result-amount" id="calcResultAmount">$0</div>
             <p class="calc-result-basis">Estimate based on $0.21 per sq. ft. and the upper limit of the selected square footage range.</p>
             <p class="calc-result-note">This is an estimate, not a final quote. Actual pricing may vary based on the actual size and condition of the flooring and the scope of work. Final pricing will be confirmed by ERA 303.</p>
-            <p class="calc-result-prompt">Want us to confirm your price?</p>
-            <button type="button" class="btn btn-olive" id="scheduleBtn">Ready to Schedule &rarr;</button>
-          </div>
 
-          <!-- Shown instead of a price for multi-floor buildings or 10,000+ sq ft spaces — a flat sq-ft formula isn't accurate at that size. -->
-          <div class="calc-bigjob" id="calcBigJob">
-            <h3>Need a More Accurate Quote?</h3>
-            <p>For larger or more complex projects, contact ERA 303 for a personalized quote.</p>
-            <a href="contact.html" class="btn btn-primary">Request a Quote &rarr;</a>
+            <!-- Shown only when the combined selected square footage exceeds 20,000 sq ft -->
+            <div class="calc-largeproject" id="calcLargeProject" hidden>
+              <span class="calc-largeproject-eyebrow">Large Project &mdash; On-Site Walkthrough Recommended</span>
+              <p>For projects over 20,000 sq. ft., we recommend an on-site walkthrough to ensure the most accurate price based on the actual size, condition and scope of the project.</p>
+            </div>
+
+            <p class="calc-result-prompt" id="calcResultPrompt">Want us to confirm your price?</p>
+            <button type="button" class="btn btn-olive" id="scheduleBtn">Request a Quote &rarr;</button>
           </div>
 
           <div class="calc-lead-form" id="calcLeadForm">
