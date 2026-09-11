@@ -518,6 +518,7 @@ p  { font-size: 1rem; color: var(--charcoal); }
   display: flex;
   align-items: center;
   justify-content: center;
+  align-self: center;
 }
 .service-icon svg { width: 26px; height: 26px; color: var(--olive); }
 .service-card h3 { font-size: 1.15rem; }

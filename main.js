@@ -23,7 +23,7 @@ const ROOM_SQFT = {
   stair:    60,   // "up to 14 stairs" — no sq ft given by client, placeholder estimate
   closet:   40,   // "walk-in closet, no size limit" — no sq ft given by client, placeholder estimate
   hallway:  150,  // "up to 150 sq ft" — per client
-  familyRoom: 300, // "up to 300 sq ft" (hard floor, not carpet) — per client
+  familyRoom: 300, // "up to 300 sq ft" — per client (surface not assumed; could be carpet or hard floor)
   openspace:500   // "up to 500 sq ft" — per client
 };
 
