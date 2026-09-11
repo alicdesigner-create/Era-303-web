@@ -1145,11 +1145,33 @@ p  { font-size: 1rem; color: var(--charcoal); }
   line-height: 1;
   margin-bottom: 10px;
 }
-.calc-result-note {
+.calc-result-label {
+  display: block;
+  font-size: .76rem;
+  font-weight: 700;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+  color: var(--olive-dk);
+  margin-bottom: 6px;
+}
+.calc-result-basis {
   font-size: .85rem;
-  color: var(--charcoal-lt);
+  color: var(--charcoal);
   max-width: 420px;
+  margin: 0 auto 10px;
+}
+.calc-result-note {
+  font-size: .8rem;
+  line-height: 1.6;
+  color: var(--charcoal-lt);
+  max-width: 440px;
   margin: 0 auto 20px;
+}
+.calc-result-prompt {
+  font-size: .92rem;
+  font-weight: 600;
+  color: var(--dark);
+  margin-bottom: 12px;
 }
 
 /* "Bigger job" card — shown instead of a price when the room/staircase
