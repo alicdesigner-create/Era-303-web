@@ -16,7 +16,7 @@ const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
    not an exact measurement. Two of these (staircase, walk-in closet)
    were NOT given an exact sq ft by the client — defaults below are a
    reasonable placeholder; adjust freely, this is the only place needed. */
-const RATE_PER_SQFT = 0.21;
+const RATE_PER_SQFT = 0.23;
 const ROOM_SQFT = {
   living:   300,  // "up to 300 sq ft" — per client
   bedroom:  200,  // "up to 200 sq ft" — per client
