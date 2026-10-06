@@ -3,13 +3,9 @@
    ============================================ */
 
 /* ---- Lead delivery ----
-   Formspree endpoint that forwards every submission (contact form +
-   both calculators) straight to era303services@gmail.com.
-   TODO (Jesse/Alic): create a free form at https://formspree.io using
-   era303services@gmail.com, then replace YOUR_FORM_ID below with the
-   real endpoint id shown in the Formspree dashboard. Until that's done,
-   submissions will fail with a console error instead of emailing out. */
-const FORMSPREE_ENDPOINT = 'https://formspree.io/f/YOUR_FORM_ID';
+   Formspree forwards contact and quote-calculator submissions to
+   info@era303co.com. */
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/mkjoggpg';
 
 /* Pricing assumptions — $ per sq ft, and the flat "up to" size assumed
    for each residential room type since customers only enter a count,
@@ -140,10 +136,12 @@ document.addEventListener('DOMContentLoaded', () => {
      forms. Sends JSON via fetch so we can show an inline "thank you"
      without leaving the page. */
   function submitToFormspree(data, { onSuccess, onError }) {
+    const payload = { ...data };
+    if (payload.email) payload._replyto = payload.email;
     fetch(FORMSPREE_ENDPOINT, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-      body: JSON.stringify(data)
+      body: JSON.stringify(payload)
     })
       .then(res => {
         if (res.ok) {
