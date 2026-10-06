@@ -153,10 +153,46 @@ document.addEventListener('DOMContentLoaded', () => {
       .catch(() => onError());
   }
 
+  /* Carry calculator context into the main contact form so a quote request
+     arrives with the selected spaces/floors and any available estimate. */
+  function goToContactFormWithQuote({ propertyType, details, estimate, note }) {
+    const params = new URLSearchParams({ propertyType, quoteDetails: details });
+    if (estimate) params.set('estimate', estimate);
+    if (note) params.set('quoteNote', note);
+    window.location.href = `contact.html?${params.toString()}#quoteForm`;
+  }
+
   /* ---- Contact page form ---- */
   const form = document.getElementById('quoteForm');
   const thankYou = document.getElementById('thankYou');
   if (form && thankYou) {
+    const quoteParams = new URLSearchParams(window.location.search);
+    const calculatorDetails = quoteParams.get('quoteDetails');
+    const calculatorPropertyType = quoteParams.get('propertyType');
+    const fromCalculator = Boolean(
+      calculatorDetails && ['residential', 'commercial'].includes(calculatorPropertyType)
+    );
+
+    if (fromCalculator) {
+      const propertySelect = form.querySelector('#propertyType');
+      if ([...propertySelect.options].some(option => option.value === calculatorPropertyType)) {
+        propertySelect.value = calculatorPropertyType;
+      }
+
+      const message = form.querySelector('#message');
+      const estimate = quoteParams.get('estimate');
+      const note = quoteParams.get('quoteNote');
+      message.value = [
+        'Quote request from the website calculator',
+        `Selected details: ${calculatorDetails}`,
+        estimate ? `Preliminary estimate: ${estimate}` : '',
+        note || ''
+      ].filter(Boolean).join('\n');
+
+      const subject = form.querySelector('[name="_subject"]');
+      if (subject) subject.value = `New ${calculatorPropertyType} calculator quote request`;
+    }
+
     form.addEventListener('submit', (e) => {
       e.preventDefault();
       if (!form.checkValidity()) {
@@ -164,7 +200,9 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
       const data = Object.fromEntries(new FormData(form).entries());
-      data.form_source = 'Contact Page';
+      data.form_source = fromCalculator
+        ? `Website Calculator — ${calculatorPropertyType}`
+        : 'Contact Page';
       const submitBtn = form.querySelector('.form-submit');
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
       submitToFormspree(data, {
@@ -259,6 +297,23 @@ document.addEventListener('DOMContentLoaded', () => {
         resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
       }
     });
+
+    const quoteLink = bigJobBox.querySelector('a[href="contact.html"]');
+    if (quoteLink) {
+      quoteLink.addEventListener('click', (e) => {
+        e.preventDefault();
+        const { total, roomsCount: currentRoomsCount, stairCount: currentStairCount, breakdownText } = readRoomSelections();
+        const exceedsEstimateLimit = currentRoomsCount > MAX_ROOMS_FOR_ESTIMATE || currentStairCount > MAX_STAIRCASES_FOR_ESTIMATE;
+        goToContactFormWithQuote({
+          propertyType: 'residential',
+          details: breakdownText,
+          estimate: exceedsEstimateLimit ? '' : `$${total.toFixed(2)}`,
+          note: exceedsEstimateLimit
+            ? 'A price estimate was not shown because this is a large or complex project; a personalized quote is requested.'
+            : ''
+        });
+      });
+    }
 
     scheduleBtn.addEventListener('click', openLeadForm);
 
@@ -467,7 +522,23 @@ document.addEventListener('DOMContentLoaded', () => {
       resultBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
     });
 
-    scheduleBtn.addEventListener('click', openLeadForm);
+    scheduleBtn.addEventListener('click', () => {
+      const result = readFloorSelections();
+      if (!result.ok) {
+        const missing = result.floorBlocks
+          .map((block, i) => (result.selections[i] ? null : i + 1))
+          .filter(n => n !== null);
+        errorBox.textContent = `Please select a square footage range for floor${missing.length > 1 ? 's' : ''} ${missing.join(', ')}.`;
+        errorBox.classList.add('show');
+        return;
+      }
+      goToContactFormWithQuote({
+        propertyType: 'commercial',
+        details: result.label,
+        estimate: `$${result.total.toFixed(2)}`,
+        note: result.isLargeProject ? 'An on-site walkthrough is recommended for this large project.' : ''
+      });
+    });
 
     const leadSubmitBtn = comCalc.querySelector('#calcSubmitBtn');
     const leadThankYou = comCalc.querySelector('#calcThankYou');
