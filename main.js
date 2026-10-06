@@ -306,7 +306,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const exceedsEstimateLimit = currentRoomsCount > MAX_ROOMS_FOR_ESTIMATE || currentStairCount > MAX_STAIRCASES_FOR_ESTIMATE;
         goToContactFormWithQuote({
           propertyType: 'residential',
-          details: breakdownText,
+          details: exceedsEstimateLimit
+            ? breakdownText.replace(/\s+\(\$[\d,]+\.\d{2}\)/g, '')
+            : breakdownText,
           estimate: exceedsEstimateLimit ? '' : `$${total.toFixed(2)}`,
           note: exceedsEstimateLimit
             ? 'A price estimate was not shown because this is a large or complex project; a personalized quote is requested.'
